@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Time in Cities</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .time {
+            margin: 20px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Current Time in Cities</h1>
+    <div id="time-container">
+        <div class="time" id="Moscow">Moscow: Loading...</div>
+        <div class="time" id="New York">New York: Loading...</div>
+        <div class="time" id="Paris">Paris: Loading...</div>
+        <div class="time" id="Seoul">Seoul: Loading...</div>
+    </div>
+    <script>
+        const websocket = new WebSocket("ws://localhost:8000/ws");
+
+        websocket.onmessage = function(event) {
+            const timeData = JSON.parse(event.data);
+            for (const [city, time] of Object.entries(timeData)) {
+                document.getElementById(city).textContent = `${city}: ${time}`;
+            }
+        };
+
+        websocket.onerror = function() {
+            alert("WebSocket connection error!");
+        };
+
+        websocket.onclose = function() {
+            alert("WebSocket connection closed!");
+        };
+    </script>
+</body>
+</html>
